@@ -89,6 +89,9 @@ auto horizontal_and_vertical_neighbors(int i, int j, std::size_t n) {
 
 auto diagonal_neighbors(int i, int j, std::size_t n) {
     std::vector<int> neighbors;
+    if (i == n) {
+        return neighbors;
+    }
 
     if (i < n - 1) {
         if (j > 0) {
@@ -107,7 +110,7 @@ auto diagonal_neighbors(int i, int j, std::size_t n) {
         }
     }
 
-    // Join all edge cells to a single black cell at (n, n)
+    // Join all edge cells to a single black cell at (n, 0)
     if (i == 0 or j == 0 or i == n - 1 or j == n - 1) {
         neighbors.push_back(n * n);
     }
@@ -166,7 +169,7 @@ bool is_black_loop(const SquareBoard& board, int i, int j) {
         }
 
         discovered[u] = true;
-        for (const auto v: diagonal_neighbors(u/n, u%n, n)) if (v != p) {
+        for (auto v: diagonal_neighbors(u/n, u%n, n)) if (v != p) {
             if (v == n * n or board.is_black(v/n, v%n)) {
                 if (_dfs(v, u)) {
                     return true;
