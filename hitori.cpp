@@ -1,3 +1,4 @@
+#include <cassert>
 #include <functional>
 #include <iostream>
 #include <vector>
@@ -159,28 +160,29 @@ void find_starting_pattern_colors(
     }
 }
 
-bool is_black_loop(const SquareBoard& board, int i, int j) {
+
+bool dfs(const SquareBoard& board, std::vector<bool>& discovered, int u, int p=-1) {
+    if (discovered[u]) { // LOOP
+        return true;
+    }
+    discovered[u] = true;
+
     auto n = board.get_size();
-    std::vector<bool> discovered(n * n + 1, false);
-
-    std::function<bool(int, int)> _dfs = [&](int u, int p) {
-        if (discovered[u]) { // LOOP
-            return true;
-        }
-
-        discovered[u] = true;
-        for (auto v: diagonal_neighbors(u/n, u%n, n)) if (v != p) {
-            if (v == n * n or board.is_black(v/n, v%n)) {
-                if (_dfs(v, u)) {
-                    return true;
-                }
+    for (auto v: diagonal_neighbors(u/n, u%n, n)) if (v != p) {
+        if (v == n * n or board.is_black(v/n, v%n)) {
+            if (dfs(board, discovered, v, u)) {
+                return true;
             }
         }
+    }
 
-        return false;
-    };
+    return false;
+};
 
-    return _dfs(i*n + j, -1);
+bool is_black_loop(const SquareBoard& board, int i, int j) {
+    auto n = board.get_size();
+    std::vector<bool> discovered(n*n + 1, false);
+    return dfs(board, discovered, i*n + j);
 }
 
 void force_whites_that_avoid_isolation(
@@ -233,6 +235,52 @@ void solve(SquareBoard& board) {
     } while (not blacks.empty() or not whites.empty());
 }
 
+bool is_solved(const SquareBoard& board) {
+    auto n = board.get_size();
+
+    // check rows for duplicates
+    for (int i = 0; i < n; ++i) {
+        std::vector<bool> exists(n, false);
+        for (int j = 0; j < n; ++j) {
+            if (not board.is_black(i, j)) {
+                auto val = board.get_value(i, j);
+                if (exists[val - 1]) {
+                    return false;
+                }
+                exists[val - 1] = true;
+            }
+        }
+    }
+
+    // check columns for duplicates
+    for (int j = 0; j < n; ++j) {
+        std::vector<bool> exists(n, false);
+        for (int i = 0; i < n; ++i) {
+            if (not board.is_black(i, j)) {
+                auto val = board.get_value(i, j);
+                if (exists[val - 1]) {
+                    return false;
+                }
+                exists[val - 1] = true;
+            }
+        }
+    }
+
+    std::vector<bool> discovered(n*n + 1, false);
+    for (int i = 0; i < n; ++i) {
+        for (int j = 0; j < n; ++j) {
+            if (board.is_black(i, j) and not discovered[i*n + j]) {
+                if (dfs(board, discovered, i*n + j)) {
+                    return false;
+                }
+                discovered[n*n] = false;
+            }
+        }
+    }
+
+    return true;
+}
+
 int main() {
     std::size_t n; std::cin >> n;
 
@@ -243,7 +291,8 @@ int main() {
     auto b = SquareBoard(n, puzzle);
 
     solve(b);
-
     std::cout << b << '\n';
+
+    assert(is_solved(b));
     return 0;
 }
