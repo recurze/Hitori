@@ -15,3 +15,39 @@ The solver returns instantaneously and it takes around 35-40s to fill in the col
 How fast are human solvers anyway? I can't find any videos of championships on YouTube.
 
 Welp, I guess I need to do better.
+
+## Stats
+
+```
+           puzzleID        time  percentile
+count    200.000000  200.000000  200.000000
+mean    8392.365000   63.900000   76.358500
+std     4919.384974   23.855511   14.729225
+min     2099.000000   29.000000   32.800000
+25%     3333.250000   47.000000   69.425000
+50%     7716.500000   59.000000   79.400000
+75%    10118.750000   77.000000   87.850000
+max    17613.000000  173.000000   98.400000
+```
+
+![Screenshot](https://github.com/recurze/Hitori/blob/master/time_hist.png?raw=true)
+![Screenshot](https://github.com/recurze/Hitori/blob/master/percentile_hist.png?raw=true)
+![Screenshot](https://github.com/recurze/Hitori/blob/master/scatter.png?raw=true)
+
+
+Sometimes I submit too early and there were mistakes. I'm marked them in the file. It happened 33/200 times.
+
+## Tips
+
+* The goal is to color black. Specifically, the goal is not to color white. So don't bother.
+* In addition to the common patterns, look at the corners and ensure no isolation.
+* Don't check if there are duplicates, instead check if there empty spaces that can take more black squares.
+* Usually, there is a unique solution.
+
+## Conclusion
+
+I was wrong to think that just because it takes x seconds to solve using a computer and input the solution, the faster times were from bots. My best score is (26s, 99.1%, id: 5898). So it's definitely possible that humans are just fast. (Doesn't mean there are bots too.)
+
+## TODO
+
+* Update solver to solve backtrack.txt and backtrack_2.txt.
