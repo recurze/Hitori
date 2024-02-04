@@ -48,6 +48,8 @@ Sometimes I submit too early and there were mistakes. I'm marked them in the fil
 
 I was wrong to think that just because it takes x seconds to solve using a computer and input the solution, the faster times were from bots. My best score is (26s, 99.1%, id: 5898). So it's definitely possible that humans are just fast. (Doesn't mean there are bots too.)
 
+![Screenshot](https://github.com/recurze/Hitori/blob/master/best.png?raw=true)
+
 ## TODO
 
 * Update solver to solve backtrack.txt and backtrack_2.txt.
